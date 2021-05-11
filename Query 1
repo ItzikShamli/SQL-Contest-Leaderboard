@@ -1,0 +1,25 @@
+SELECT
+    LeaderScore.hacker_id,
+    LeaderScore.name,
+    SUM(LeaderScore.MaxScores)
+FROM
+    (SELECT
+    h.hacker_id,
+    h.name,
+    s.challenge_id,
+    MAX(s.score) AS MaxScores
+FROM
+    Hackers AS h INNER JOIN Submissions AS s ON h.hacker_id = s.hacker_id
+GROUP BY
+    h.hacker_id,
+    h.name,
+    s.challenge_id
+ORDER BY
+    h.hacker_id) AS LeaderScore
+GROUP BY
+    LeaderScore.hacker_id,
+    LeaderScore.name
+HAVING
+    SUM(LeaderScore.MaxScores) > 0
+ORDER BY
+    SUM(LeaderScore.MaxScores) DESC, LeaderScore.hacker_id
